@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using praktika22.Data.Interfaces;
+using praktika22.Data.Models;
 using praktika22.Data.ViewModell;
+using System.Collections;
+using System.Collections.Generic;
 using System.Net.WebSockets;
 
 namespace praktika22.Controllers
@@ -24,6 +27,12 @@ namespace praktika22.Controllers
 			VMItems.Categorys = IAllCategorys.AllCategorys;
 			VMItems.SelectCategory = id;
 			return View(VMItems);
+		}
+		[HttpGet]
+		public ViewResult Add()
+		{
+			IEnumerable<Categorys> Categorys = IAllCategorys.AllCategorys;
+			return View(Categorys);
 		}
 	}
 }
