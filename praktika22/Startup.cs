@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using praktika22.Data.DataBase;
 using praktika22.Data.Interfaces;
 using praktika22.Data.Mocks;
 
@@ -12,8 +13,8 @@ namespace praktika22
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddTransient<ICategorys, MockCategorys>();
-			services.AddTransient<IItems, MockItems>();
+			services.AddTransient<ICategorys, DBCategory>();
+			services.AddTransient<IItems, DBItems>();
 
 			services.AddMvc(option => option.EnableEndpointRouting = false);
 		}

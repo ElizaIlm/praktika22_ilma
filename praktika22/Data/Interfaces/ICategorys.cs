@@ -6,6 +6,6 @@ namespace praktika22.Data.Interfaces
 {
 	public interface ICategorys
 	{
-		public IEnumerable<Categorys> AllCategorys { get; }
+		public IEnumerable<Categorys> AllCategorys { get;}
 	}
 }
