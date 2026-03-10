@@ -11,8 +11,9 @@ namespace praktika22.Data.DataBase
 	public class DBItems : IItems
 	{
 		public IEnumerable<Categorys> Categorys = new DBCategory().AllCategorys;
+        private object mySqlDataReaderItem;
 
-		public IEnumerable<Items> AllItems
+        public IEnumerable<Items> AllItems
 		{
 			get
 			{
@@ -35,6 +36,43 @@ namespace praktika22.Data.DataBase
 				return items;
 			}
 		}
-	}
+        public int Add(Items Item)
+        {
+            MySqlConnection MySqlConnection = Connection.MySqlOpen();
+            Connection.MySqlQuery(
+            $"INSERT INTO `Items` (`Name`, `Description`, `Img`, `Price`, `IdCategory`) VALUES ('{Item.Name}', '{Item.Description}', '{Item.Img}', {Item.Price}, {Item.Category.Id});",
+            MySqlConnection);
+            MySqlConnection.Close();
+
+            int IdItem = -1;
+            MySqlConnection = Connection.MySqlOpen();
+            MySqlDataReader MySqlDataReaderItem = Connection.MySqlQuery(
+            $"SELECT `Id` FROM `Items` WHERE `Name` = '{Item.Name}' AND `Description` = '{Item.Description}' AND `Price` = {Item.Price} AND `IdCategory` = {Item.Category.Id};",
+            MySqlConnection);
+            if (MySqlDataReaderItem.HasRows)
+            {
+                MySqlDataReaderItem.Read();
+                IdItem = MySqlDataReaderItem.GetInt32(0);
+            }
+            MySqlConnection.Close();
+            return IdItem;
+        }
+        public void Update(Items Item, int id)
+        {
+            MySqlConnection MySqlConnection = Connection.MySqlOpen();
+            Connection.MySqlQuery(
+                $"UPDATE `Items` SET `Name`='{Item.Name}',`Description`='{Item.Description}',`Img`='{Item.Img}'," +
+                $"`Price`={Item.Price},`IdCategory`={Item.Category.Id} WHERE `Id`={id}",
+                MySqlConnection);
+            MySqlConnection.Close();
+        }
+
+        public void Delete(int id)
+        {
+            MySqlConnection MySqlConnection = Connection.MySqlOpen();
+            Connection.MySqlQuery($"DELETE FROM `Items` WHERE `Id`={id}", MySqlConnection);
+            MySqlConnection.Close();
+        }
+    }
 }
 

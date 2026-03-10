@@ -1,4 +1,6 @@
-﻿using praktika22.Data.Interfaces;
+﻿using MySql.Data.MySqlClient;
+using praktika22.Data.Common;
+using praktika22.Data.Interfaces;
 using praktika22.Data.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,5 +57,9 @@ namespace praktika22.Data.Mocks
 				};
 			}
 		}
-	}
+        public int Add(Items Item)
+        {
+			return 0;
+        }
+    }
 }
