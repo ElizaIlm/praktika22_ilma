@@ -1,4 +1,5 @@
-﻿
+﻿@default-color: #00000038;
+
 body {
     padding: 0;
     margin: 0;
@@ -7,7 +8,7 @@ body {
 .header {
     height: 60px;
     background: #007eff;
-    box-shadow: 0px 5px 5px #00000038;
+    box-shadow: 0px 5px 5px @default-color;
 }
 
     .header img {
@@ -43,7 +44,7 @@ body {
     }
 
 .item {
-    box-shadow: 2px 2px 2px #00000038;
+    box-shadow: 2px 2px 2px @default-color;
     margin-bottom: 10px;
 }
 
@@ -62,18 +63,3 @@ body {
 h3 {
     margin: 0px;
 }
-form {
-    box-shadow: 2px 2px 2px #00000038;
-    width: 400px;
-    padding: 10px;
-    margin: 25px auto;
-}
-    form div {
-        margin-bottom: 10px;
-    }
-    form input{
-        width: -webkit-fill-aviailable;
-    }
-    form select {
-        width: -webkit-fill-aviailable;
-    }

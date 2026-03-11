@@ -1,0 +1,64 @@
+﻿@using praktika22.Data.Models
+@model IEnumerable<Categorys>
+
+@{
+    Layout = "_Layout";
+    Items item = ViewBag.Item;
+}
+
+<h2>Редактирование предмета</h2>
+
+<form method="post" enctype="multipart/form-data">
+    <div>
+        Наименование:
+        <br /><input name="name" required placeholder="Наименование:" value="@item.Name" />
+    </div>
+
+    <div>
+        Описание:
+        <br /><input name="description" required placeholder="Описание:" value="@item.Description" />
+    </div>
+
+    <div>
+        <label for="file">Изображение</label>
+        <br /><input name="files" type="file" />
+        @if (!string.IsNullOrEmpty(item.Img))
+        {
+        }
+    </div>
+
+    <div>
+        Стоимость:
+        <br /><input name="price" required value="@item.Price" />
+    </div>
+
+    <div>
+        Категория:
+        <br /><select name="idCategory">
+            @{
+                foreach (var Category in Model)
+                {
+                    if (Category.Id == item.Category?.Id)
+                    {
+                        <option selected="selected" value="@Category.Id">@Category.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@Category.Id">@Category.Name</option>
+                    }
+                }
+            }
+        </select>
+    </div>
+
+    <input type="submit" value="Сохранить изменения" />
+</form>
+
+<form method="post" action="/Items/Delete">
+    <input type="hidden" name="id" value="@item.Id" />
+    <input type="submit" value="Удалить предмет"  />
+</form>
+
+<div style="margin-top: 20px;">
+    <a href="/Items/List">Вернуться к списку</a>
+</div>
