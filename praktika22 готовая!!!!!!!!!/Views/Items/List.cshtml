@@ -74,4 +74,40 @@
             }
         }
     }
+
 }
+<script>
+    $(".item").children(".basket").children(".button").click(function () {
+        // показываем элемент с классом count
+        $(this).parent().children(".count").show();
+        // скрываем кнопку
+        $(this).hide();
+        // вызываем AJAX
+        $.ajax({
+            // контроллер выполнения и метод вызываемый в нём
+            url: '@Url.Action("Basket", "Items")',
+            // тип данных которые отправляем
+            contentType: "application/json; charset=utf-8",
+            // передаём ID предмета
+            data: { idItem: $(this).attr('id') },
+            // тип данных, ожидаемых от сервера.
+            dataType: "json",
+            // Функция успешного выполнения
+            success: SuccessBasket,
+            // функция не успешного выполнения
+            error: AjaxError
+        });
+    });
+
+    // Функция успешного выполнения
+    function SuccessBasket(data) {
+        console.log(data);
+    }
+
+    // Функция не успешного выполнения
+    function AjaxError() {
+        console.log("Ошибка выполнения ajax");
+    }
+</script>
+
+
