@@ -73,6 +73,7 @@ h3 {
 
 .basket {
     float: right;
+    margin-left:50px;
 }
 
 .count {

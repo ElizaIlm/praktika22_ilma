@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.WebSockets;
 
 namespace praktika22.Controllers
@@ -125,6 +126,14 @@ namespace praktika22.Controllers
         {
             IAllItems.Delete(id);
             return Redirect("/Items/List");
+        }
+        public ActionResult Basket(int IdItem= -1)
+        {
+            if(IdItem != -1)
+            { 
+                Startup.BasketItem.Add(new ItemsBasket(1, IAllItems.AllItems.Where(x=>x.Id == IdItem).First()));
+            }
+            return Json(Startup.BasketItem);
         }
     }
 }

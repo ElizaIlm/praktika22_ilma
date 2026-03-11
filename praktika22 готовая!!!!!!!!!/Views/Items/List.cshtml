@@ -22,7 +22,75 @@
             }
         }
     </select>
+    <script>
+        $(".item").children(".basket").children(".button").click(function () {
+            // показываем элемент с классом count
+            $(this).parent().children(".count").show();
+            // скрываем кнопку
+            $(this).hide();
+            // вызываем AJAX
+            $.ajax({
+                // контроллер выполнения и метод вызываемый в нём
+                url: '@Url.Action("Basket", "Items")',
+                // тип данных которые отправляем
+                contentType: "application/json; charset=utf-8",
+                // передаём ID предмета
+                data: { idItem: $(this).attr('id') },
+                // тип данных, ожидаемых от сервера.
+                dataType: "json",
+                // Функция успешного выполнения
+                success: SuccessBasket,
+                // функция не успешного выполнения
+                error: AjaxError
+            });
+        });
 
+        // Функция успешного выполнения
+        function SuccessBasket(data) {
+            console.log(data);
+        }
+
+        // Функция не успешного выполнения
+        function AjaxError() {
+            console.log("Ошибка выполнения ajax");
+        }
+
+        // назначаем действие на кнопку -
+        $(".count").children(".min").click(function () {
+            // получаем ID оборудования
+            var idItem = $(this).parent().parent().children('.button').attr('id');
+            // получаем кол-во
+            var count = $(this).parent().children(".text").text();
+            // уменьшаем кол-во
+            count--;
+            // если кол-во == 0
+            if (count == 0) {
+                // показываем кнопку
+                $(this).parent().parent().children('.button').show();
+                // скрываем каунтер
+                $(this).parent().parent().children('.count').hide();
+            } else {
+                // изменяем текст
+                $(this).parent().children(".text").text(count);
+            }
+        }
+
+        // вызываем AJAX
+        $.ajax({
+            // контроллер выполнения и метод вызываемый в нём
+            url: '@Url.Action("BasketCount", "Items")',
+            // тип данных которые отправляем
+            contentType: "application/json; charset=utf-8",
+            // передаём ID предмета и кол-во
+            data: { idItem: idItem, count: count },
+            // тип данных, ожидаемых от сервера.
+            dataType: "json",
+            // функция успешного выполнения
+            success: SuccessBasket,
+            // функция не успешного выполнения
+            error: AjaxError
+        });
+    </script>
 
     <script>
         function SelectCategory(sender) {
@@ -76,38 +144,6 @@
     }
 
 }
-<script>
-    $(".item").children(".basket").children(".button").click(function () {
-        // показываем элемент с классом count
-        $(this).parent().children(".count").show();
-        // скрываем кнопку
-        $(this).hide();
-        // вызываем AJAX
-        $.ajax({
-            // контроллер выполнения и метод вызываемый в нём
-            url: '@Url.Action("Basket", "Items")',
-            // тип данных которые отправляем
-            contentType: "application/json; charset=utf-8",
-            // передаём ID предмета
-            data: { idItem: $(this).attr('id') },
-            // тип данных, ожидаемых от сервера.
-            dataType: "json",
-            // Функция успешного выполнения
-            success: SuccessBasket,
-            // функция не успешного выполнения
-            error: AjaxError
-        });
-    });
 
-    // Функция успешного выполнения
-    function SuccessBasket(data) {
-        console.log(data);
-    }
-
-    // Функция не успешного выполнения
-    function AjaxError() {
-        console.log("Ошибка выполнения ajax");
-    }
-</script>
 
 

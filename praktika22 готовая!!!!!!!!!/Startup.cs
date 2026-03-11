@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using praktika22.Data.DataBase;
 using praktika22.Data.Interfaces;
 using praktika22.Data.Mocks;
+using praktika22.Data.Models;
+using System.Collections.Generic;
 
 namespace praktika22
 {
@@ -24,5 +26,6 @@ namespace praktika22
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();
         }
+        public static List<ItemsBasket> BasketItem = new List<ItemsBasket>();
     }
 }
