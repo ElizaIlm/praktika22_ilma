@@ -135,5 +135,22 @@ namespace praktika22.Controllers
             }
             return Json(Startup.BasketItem);
         }
+        public ActionResult BasketCount(int idItem = -1, int count = -1)
+        {
+            // Если ID предмета указано
+            if (idItem != -1)
+            {
+                // Если кол-во = 0
+                if (count == 0)
+                    // Удаляем из корзины
+                    Startup.BasketItem.Remove(Startup.BasketItem.Find(x => x.Id == idItem));
+                else
+                {
+                    Startup.BasketItem.Find(x => x.Id == idItem).Count = count;
+                }
+            }
+            return Json(Startup.BasketItem);
+
+        } 
     }
 }

@@ -22,113 +22,139 @@
             }
         }
     </select>
-    <script>
-        $(".item").children(".basket").children(".button").click(function () {
-            // показываем элемент с классом count
-            $(this).parent().children(".count").show();
-            // скрываем кнопку
-            $(this).hide();
-            // вызываем AJAX
-            $.ajax({
-                // контроллер выполнения и метод вызываемый в нём
-                url: '@Url.Action("Basket", "Items")',
-                // тип данных которые отправляем
-                contentType: "application/json; charset=utf-8",
-                // передаём ID предмета
-                data: { idItem: $(this).attr('id') },
-                // тип данных, ожидаемых от сервера.
-                dataType: "json",
-                // Функция успешного выполнения
-                success: SuccessBasket,
-                // функция не успешного выполнения
-                error: AjaxError
-            });
-        });
 
-        // Функция успешного выполнения
-        function SuccessBasket(data) {
-            console.log(data);
-        }
-
-        // Функция не успешного выполнения
-        function AjaxError() {
-            console.log("Ошибка выполнения ajax");
-        }
-
-        // назначаем действие на кнопку -
-        $(".count").children(".min").click(function () {
-            // получаем ID оборудования
-            var idItem = $(this).parent().parent().children('.button').attr('id');
-            // получаем кол-во
-            var count = $(this).parent().children(".text").text();
-            // уменьшаем кол-во
-            count--;
-            // если кол-во == 0
-            if (count == 0) {
-                // показываем кнопку
-                $(this).parent().parent().children('.button').show();
-                // скрываем каунтер
-                $(this).parent().parent().children('.count').hide();
-            } else {
-                // изменяем текст
-                $(this).parent().children(".text").text(count);
-            }
-        }
-
-        // вызываем AJAX
-        $.ajax({
-            // контроллер выполнения и метод вызываемый в нём
-            url: '@Url.Action("BasketCount", "Items")',
-            // тип данных которые отправляем
-            contentType: "application/json; charset=utf-8",
-            // передаём ID предмета и кол-во
-            data: { idItem: idItem, count: count },
-            // тип данных, ожидаемых от сервера.
-            dataType: "json",
-            // функция успешного выполнения
-            success: SuccessBasket,
-            // функция не успешного выполнения
-            error: AjaxError
-        });
-    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
         function SelectCategory(sender) {
             window.location.href = "/Items/List?id=" + sender.value;
         }
+
+        $(document).ready(function () {
+            // при нажатии на кнопку "В корзину"
+            $(".basket .button").click(function () {
+                var $this = $(this);
+                var $basket = $this.parent();
+
+                console.log("Нажали В корзину, ID:", $this.attr('id'));
+
+                // показываем счетчик
+                $basket.children(".count").show();
+                // скрываем кнопку
+                $this.hide();
+
+                // AJAX запрос
+                $.ajax({
+                    url: '@Url.Action("Basket", "Items")',
+                    type: 'POST',
+                    data: { idItem: $this.attr('id') },
+                    success: function (data) {
+                        console.log("Товар добавлен", data);
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("Ошибка:", error);
+                    }
+                });
+            });
+
+            // КНОПКА МИНУС
+            $(".min").click(function () {
+                var $this = $(this);
+                var $countDiv = $this.parent();
+                var $basketDiv = $countDiv.parent();
+                var $mainButton = $basketDiv.children('.button');
+                var $textSpan = $countDiv.children('.text');
+
+                var idItem = $mainButton.attr('id');
+                var count = parseInt($textSpan.text());
+
+                // уменьшаем
+                count--;
+                console.log("Минус: ID=" + idItem + ", новое значение=" + count);
+
+                if (count <= 0) {
+                    // если 0 - показываем кнопку "В корзину"
+                    $mainButton.show();
+                    $countDiv.hide();
+                    count = 0;
+                } else {
+                    // обновляем текст
+                    $textSpan.text(count);
+                }
+
+                // AJAX
+                $.ajax({
+                    url: '@Url.Action("BasketCount", "Items")',
+                    type: 'POST',
+                    data: { idItem: idItem, count: count },
+                    success: function (data) {
+                        console.log("Обновлено", data);
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("Ошибка:", error);
+                    }
+                });
+            });
+
+            // КНОПКА ПЛЮС - отдельный обработчик
+            $(".max").click(function () {
+                var $this = $(this);
+                var $countDiv = $this.parent();
+                var $basketDiv = $countDiv.parent();
+                var $mainButton = $basketDiv.children('.button');
+                var $textSpan = $countDiv.children('.text');
+
+                var idItem = $mainButton.attr('id');
+                var count = parseInt($textSpan.text());
+
+                // увеличиваем
+                count++;
+                console.log("Плюс: ID=" + idItem + ", новое значение=" + count);
+
+                // обновляем текст
+                $textSpan.text(count);
+
+                // AJAX
+                $.ajax({
+                    url: '@Url.Action("BasketCount", "Items")',
+                    type: 'POST',
+                    data: { idItem: idItem, count: count },
+                    success: function (data) {
+                        console.log("Обновлено", data);
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("Ошибка:", error);
+                    }
+                });
+            });
+        });
+
     </script>
 </div>
 
 <h2>Все предметы</h2>
 <a href="/Items/Add">Добавить новый предмет</a>
-@{
-    foreach (var item in Model.Items)
-    {
-        if (item.Category.Id == Model.SelectCategory || Model.SelectCategory == 0)
+
+<div class="items-container">
+    @{
+        foreach (var item in Model.Items)
         {
-            // Если ID категории совпадает с выбранной
-            if (item.Category.Id == Model.SelectCategory)
+            if (item.Category.Id == Model.SelectCategory || Model.SelectCategory == 0)
             {
-                        // отображаем
                 <div class="item">
                     <img src="@item.Img" />
-                    <!-- Кнопка добавления в корзину-->
+
                     <div class="basket">
                         <div class="button" id="@item.Id">
                             В корзину
                         </div>
-                        <div class="count">
-                            <div class="button min"></div>
+                        <div class="count" style="display: none;">
+                            <div class="min">-</div>
                             <div class="text">1</div>
-                            <div class="button max"></div>
+                            <div class="max">+</div>
                         </div>
                     </div>
-                </div>
-            }
-            else
-            {
-                <div class="item">
-                    <img src="@item.Img" />
+
                     <div class="data">
                         <h3>Модель: @item.Name</h3>
                         <div>Цена: @item.Price.ToString("c")</div>
@@ -142,8 +168,4 @@
             }
         }
     }
-
-}
-
-
-
+</div>
